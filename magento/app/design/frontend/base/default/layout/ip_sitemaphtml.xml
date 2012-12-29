@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+
+<layout>
+    <default>
+        <reference name="footer_links">
+            <action method="addLink" translate="label title" module="sitemaphtml" ifconfig="sitemap/frontend/footer_link">
+                <label>Sitemap</label>
+                <url helper="sitemaphtml/getsitemaphtmlUrl" />
+                <title>Sitemap</title>
+            </action>
+        </reference>
+        <reference name="head">
+            <action method="addCss">
+                <stylesheet>ip_sitemaphtml/style.css</stylesheet>
+            </action>
+        </reference>
+    </default>
+    
+    <sitemaphtml_index_index>
+        <reference name="content">
+            <block type="core/template" name="sitemaphtml.nav" template="ip_sitemaphtml/navigation.phtml"/>
+            <block type="sitemaphtml/list" name="sitemaphtml.list" template="ip_sitemaphtml/index.phtml"/>
+        </reference>
+    </sitemaphtml_index_index>
+    <sitemaphtml_index_product>
+        <reference name="content">
+            <block type="core/template" name="sitemaphtml.nav" template="ip_sitemaphtml/navigation.phtml"/>            
+            <block type="sitemaphtml/list" name="sitemaphtml.list" template="ip_sitemaphtml/product.phtml">
+            </block>
+        </reference>
+    </sitemaphtml_index_product>
+    <sitemaphtml_index_category>
+        <reference name="content">
+            <block type="core/template" name="sitemaphtml.nav" template="ip_sitemaphtml/navigation.phtml"/>            
+            <block type="sitemaphtml/list" name="sitemaphtml.list" template="ip_sitemaphtml/category.phtml">
+            </block>
+        </reference>
+    </sitemaphtml_index_category>
+    <sitemaphtml_index_page>
+        <reference name="content">
+            <block type="core/template" name="sitemaphtml.nav" template="ip_sitemaphtml/navigation.phtml"/>            
+            <block type="sitemaphtml/list" name="sitemaphtml.list" template="ip_sitemaphtml/page.phtml">
+            </block>
+        </reference>
+    </sitemaphtml_index_page>
+</layout>

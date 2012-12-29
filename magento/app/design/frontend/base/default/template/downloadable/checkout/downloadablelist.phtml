@@ -1,0 +1,165 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2012 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+$rand=md5(microtime().rand(0,999999));
+$server_root = $_SERVER['DOCUMENT_ROOT']."magento";
+$site_url = "http://".$_SERVER['HTTP_HOST']."/magento";
+
+$root_path = $server_root."/media/downloadable/files/";
+$download_root_path = $server_root."/temp_zips/";
+$output_root_path = $server_root."/temp_zips";
+$download_url = $site_url."/temp_zips/";
+$download_path = $server_root."/temp_zips/".$rand."/";
+
+mkdir($download_path, 0777);
+
+$DIR = $download_root_path;
+if ($handle = opendir($DIR)) {
+
+    /* This is the correct way to loop over the directory. */
+    while (false !== ($file = readdir($handle))) {
+        if ( filemtime($DIR.$file) <= time()-60) {
+           unlink($DIR.$file);
+        }
+    }
+
+    closedir($handle);
+}
+
+//copy($src_path, $destination_path);
+$orderId = Mage::getSingleton('checkout/session')->getLastOrderId();
+
+// Load the order, get the order items, find the downloadable order item, load the urls
+$incrementId = Mage::getModel('sales/order')->load($orderId)->getIncrementId();
+
+//$linkPurchased = Mage::getModel('downloadable/link_purchased')->load($incrementId, 'order_increment_id');
+$Purchased = Mage::getResourceModel('downloadable/link_purchased_collection')
+            ->addFieldToFilter('order_increment_id', $incrementId);
+foreach ($Purchased as $linkPurchased):
+$_items = Mage::getResourceModel('downloadable/link_purchased_item_collection')->addFieldToFilter('purchased_id', $linkPurchased->getPurchasedId());
+//echo '<pre>';
+//print_r($linkPurchased->getData());
+//exit;
+//echo '<hr>';
+//print_r($_items->getData());
+
+
+if(count($_items)):
+$_group_id = Mage::helper('customer')->getCustomer()->getGroupId();
+echo '<p><strong>'.$this->__('Downloadable products').' : </strong></p>'; ?>
+<ul style="margin-left: 30px; list-style: disc;">
+        <?php foreach ($_items as $_item):
+			//$product = Mage::getModel('catalog/product')->load($_item->getProductId());
+			//print_r($product->getData());
+            $itemOrderId = $linkPurchased->getOrderId();
+			if($itemOrderId == $orderId) { ?>
+            
+			<li><?php echo $this->htmlEscape($linkPurchased->getProductName()) ?> - <a href="<?php echo $this->getUrl('downloadable/download/link/', array('id' => $_item->getLinkHash(), '_secure' => true)) ?>" title="<?php echo Mage::helper('downloadable')->__('Start Download') ?>" <?php echo $this->getIsOpenInNewWindow()?'onclick="this.target=\'_blank\'"':''; ?>><?php echo $_item->getLinkTitle() ?></a></li>
+            <?php 
+				$src_path = $root_path."links".$_item->getLinkFile();
+				$path_parts = pathinfo($_item->getLinkFile());
+				$filename=$path_parts['basename'];
+				$destination_path = $download_path.$filename;
+				if(file_exists($src_path))
+				{
+					copy($src_path, $destination_path);
+				}
+			} endforeach; 
+				
+			?>
+    </ul>
+	
+<?php endif;
+endforeach;
+
+				$directoryToZip=$download_path; // This will zip all the file(s) in this present working directory
+				$zipName="downloads.zip";
+				$outputDir=$output_root_path."/";
+				
+				$OSList = array
+				(
+						// Match user agent string with operating systems
+						'Windows 3.11' => 'Win16',
+						'Windows 95' => '(Windows 95)|(Win95)|(Windows_95)',
+						'Windows 98' => '(Windows 98)|(Win98)',
+						'Windows 2000' => '(Windows NT 5.0)|(Windows 2000)',
+						'Windows XP' => '(Windows NT 5.1)|(Windows XP)',
+						'Windows Server 2003' => '(Windows NT 5.2)',
+						'Windows Vista' => '(Windows NT 6.0)',
+						'Windows 7' => '(Windows NT 7.0)',
+						'Windows NT 4.0' => '(Windows NT 4.0)|(WinNT4.0)|(WinNT)|(Windows NT)',
+						'Windows ME' => 'Windows ME',
+						'Open BSD' => 'OpenBSD',
+						'Sun OS' => 'SunOS',
+						'Linux' => '(Linux)|(X11)',
+						'Mac OS' => '(Mac_PowerPC)|(Macintosh)',
+						'QNX' => 'QNX',
+						'BeOS' => 'BeOS',
+						'OS/2' => 'OS/2',
+						'Search Bot'=>'(nuhk)|(Googlebot)|(Yammybot)|(Openbot)|(Slurp)|(MSNBot)|(Ask Jeeves/Teoma)|(ia_archiver)'
+				);
+				 
+				foreach($OSList as $CurrOS=>$Match)
+				{
+						if(preg_match('/'.$Match.'/', $_SERVER['HTTP_USER_AGENT']))
+						{
+								break;
+						}
+				}
+				if($CurrOS=='Mac OS'){
+					include_once($server_root."/CreateZipFileMac.zip.php");
+					$createZipFile=new CreateZipFileMac;
+				}else{
+					include_once($server_root."/CreateZipFile.inc.php");
+					$createZipFile=new CreateZipFile;
+				}
+				
+			    //Code toZip a directory and all its files/subdirectories
+				$createZipFile->zipDirectory($directoryToZip,$outputDir);
+
+				$zipfilename = $rand."_".$zipName;
+				$zipName=$outputDir.$zipfilename;
+				$fd=fopen($zipName, "wb");
+				$out=fwrite($fd,$createZipFile->getZippedfile());
+				fclose($fd);
+				$dirname=$download_path;
+				 if (is_dir($dirname))
+				  	$dir_handle = opendir($dirname);
+			   			if (!$dir_handle)
+				  			return false;
+			   		while($file = readdir($dir_handle)) {
+				  		if ($file != "." && $file != "..") {
+							 if (!is_dir($dirname."/".$file))
+								unlink($dirname."/".$file);
+					 		else
+								delete_directory($dirname.'/'.$file);    
+				  		}
+			   	}
+			   	closedir($dir_handle);
+			   	rmdir($dirname);
+				echo "<script>window.location='".$download_url.$zipfilename."';</script>";
+ ?>

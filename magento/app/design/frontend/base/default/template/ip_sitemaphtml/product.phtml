@@ -1,0 +1,8 @@
+<div class="sitemaphtml-data">
+    <div class="fieldset">
+        <h2 class="legend"><?php echo $this->__('Products') ?></h2>
+        <?php foreach( $this->getProducts() as $_product): ?>
+            <a href="<?php echo Mage::getUrl($_product->getUrlPath()); ?>">  <?php echo $_product->getName();?></a> <br/>
+        <?php endforeach; ?>
+    </div>
+</div>

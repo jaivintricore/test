@@ -1,0 +1,336 @@
+Coding Part : /dev.dollskill.com/html/app
+Design Part : /dev.dollskill.com/html/skin
+
+
+/dev.dollskill.com/html/app
+local : modules that we develop or we purchase
+core : Never modify it
+community : magento community modules
+
+/dev.dollskill.com/html/app/code/local/GoMage
+Coding part of gomage extension
+
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/
+design part (.phtml files) of gomage extension
+
+
+theming part
+/dev.dollskill.com/html/skin/front/default/tribeca/css/
+/dev.dollskill.com/html/skin/front/default/tribeca/images/
+/dev.dollskill.com/html/skin/front/default/tribeca/js/
+
+
+
+three posibilities of file being called.
+1] frontend/base/default/ -priotiry 2
+2] frontend/default/default/ -priotiry 3
+3] frontend/default/tribeca/(here tribeca is our theme) -priotiry 1
+
+
+Review Example : 
+
+
+http://dev.dollskill.com/paypal/express/review/
+/dev.dollskill.com/html/app/code/local/Mg/Paypal/Model/Express/Checkout.php
+/dev.dollskill.com/html/app/design/frontend/base/default/template/paypal/express/review.phtml
+
+
+log file path : /dev.dollskill.com/html/var/log
+
+// prepare debug data
+$logger = Mage::getModel('core/log_adapter', 'payment_' . $this->_methodType . '.log');
+$debugData = array('request' => $request, 'response' => array());
+// log request and response
+$debugData['response'] = "sudhir tiwari";
+$logger->log($debugData);
+[3:16:23 PM] Sudhir Tiwari: [Saturday, May 05, 2012 3:07 PM] Sudhir Tiwari: 
+
+<<< Merchant Account : 
+url : https://www.sandbox.paypal.com/
+username : sudhir_1334577446_biz@gmail.com
+password : sudhirtiwari
+
+API Information : 
+API Username sudhir_1334577446_biz_api1.gmail.com
+API Password 1334577472
+Signature : AFcWxV21C7fd0v3bYYYRCpSSRl31AleyYjbjGL9ok-bWNQE4vpl2J9KF
+
+Buyer Account : 
+url : https://www.sandbox.paypal.com/
+username : sudhir_1333782801_per@gmail.com
+password : sudhirtiwari
+[3:16:57 PM] Sudhir Tiwari: http://developer.paypal.com
+wondefuljin@gmail.com / montu007
+
+
+Ftp:
+
+
+<Host>dollskill.com</Host>
+            <Port>21</Port>
+            <Protocol>0</Protocol>
+            <Type>0</Type>
+            <User>ftp@dollskill.com</User>
+            <Pass>killem22</Pass>
+
+
+100008333..
+
+
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/colorselectorplus/catalog/product/list.phtml 
+	-Create column 3->4    <?php $_columnCount = $this->getColumnCount(); $_columnCount = 4; ?>
+	-Image size Change   
+ 		src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(230,290); ?>"
+                         width="230<?php //echo $img_size; ?>"
+                         height="290<?php //echo $img_size; ?>"
+                         alt="<?php  echo $this->helper('catalog/image')->init($prdInfo, 'over_image')->resize(230,290); ?>" />
+
+
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/2colums-left.phtml(hide sidebar)
+	<!-- <div class="col-left sidebar"><?php echo $this->getChildHtml('left') ?></div> -->
+
+two changes in css:
+.category-image { width:71%; overflow:hidden; margin:0 0 20px; text-align:center; float:right; }
+.category-description {
+    	text-align: justify;
+    	width: 27%;
+ }
+
+
+new added:
+
+.col-main{
+	float: left !important;
+    font-family: Arial,Helvetica,sans-serif;
+    margin: 0;
+    width: 960px !important;
+}
+
+.products-grid li.item { float:left; width:230px; padding: 0 0 20px 10px;}
+
+.cat_name{ float:left; padding-right:20px; }-new added
+
+.sorter .sort-by { float:left; margin-left:50px;}
+
+.limiter { float:left; margin-left:10px; }
+
+.filtercategory{float:left;}
+
+for add category name On Description:
+
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/catalog/category/view.phtml
+
+			<div class="cat_name">
+				<h1><?php echo Mage::registry('current_category')->getName(); ?></h1>
+        		</div>
+
+For Ctegory Drop-Down Menu:
+
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/catalog/product/list/toolbar.phtml
+	Add Line:92->123
+
+for change size of color patches:
+
+/dev.dollskill.com/html/app/code/local/CJM/ColorSelectorPlus/Helper/data.phtml
+
+$product_base['image'][] = strval(Mage::helper('catalog/image')->init($_product, 'base', $_image->getFile())->resize(230,290));
+
+Align Category Image And Category Description:
+
+.category-image { width:71%; overflow:hidden; margin:0 0 20px; text-align:center; float:right; }
+.category-description {
+    	text-align: justify;
+    	width: 27%;
+ }
+
+
+To Get Tracking Link In Email:
+/dev.dollskill.com/html/app/design/frontend/base/default/template/email/order/shipment/tracks.phtml
+<td align="left" valign="top" style="padding:3px 9px"><?php echo $_item->getTitle() ?></td>
+            <?php if ($_item->getCarrierCode()=='usps'): ?>
+                 <td align="center" valign="top" style="padding:3px 9px"><a href = "http://trkcnfrm1.smi.usps.com/PTSInternetWeb/InterLabelInquiry.do?origTrackNum=<?php echo $_item->getNumber() ?>"><?php echo $_item->getNumber() ?></a></td>
+            <?php elseif ($_item->getCarrierCode()=='ups'): ?>
+                 <td align="center" valign="top" style="padding:3px 9px"><a href="http://wwwapps.ups.com/WebTracking/processInputRequest?tracknum=<?php echo $_item->getNumber() ?>"><?php echo $_item->getNumber() ?></a></td>
+            <?php elseif ($_item->getCarrierCode()=='dhl'): ?>
+                 <td align="center" valign="top" style="padding:3px 9px"><a href="http://track.dhl-usa.com/TrackByNbr.asp?ShipmentNumber=<?php echo $_item->getNumber() ?>"><?php echo $_item->getNumber() ?></a></td>
+            <?php elseif ($_item->getCarrierCode()=='fedex'): ?>
+                 <td align="center" valign="top" style="padding:3px 9px"><a href="http://www.fedex.com/Tracking?tracknumbers=<?php echo $_item->getNumber() ?>"><?php echo $_item->getNumber() ?></a></td>
+            <?php else: ?>
+                 <td align="center" valign="top" style="padding:3px 9px"><?php echo $_item->getNumber() ?></td>
+            <?php endif; ?>
+
+To Remove Gift MessageBox From Order Email:
+
+/dev.dollskill.com/html/app/design/frontend/base/default/template/email/order/items.phtml
+Replace:
+<?php if($_order->getGiftMessageId() && $_giftMessage = $this->helper('giftmessage/message')->getGiftMessage($_order->getGiftMessageId())): ?>
+From Top Of <tbody> To top of<table>. 
+
+To Put Shipment Tracking No In Shipping Method Table:
+
+/dev.dollskill.com/html/app/locale/en_US/template/email/sales/shipment_new.html(Tamplate for Registered)
+/dev.dollskill.com/html/app/locale/en_US/template/email/sales/shipment_new_guest.html(for Guests)
+
+
+IN admin Panel setting->transaction_email. Edit two tamplate 1.New shipping edit.2.new shipment for guest
+Put below code into Shipping description td.
+<br/>
+<br/>
+{{block type='core/template' area='frontend' template='email/order/shipment/track.phtml' shipment=$shipment order=$order}}
+
+then:
+/dev.dollskill.com/html/app/design/frontend/base/default/template/email/order/shipment/tracks.phtml
+
+Old file is back uped by name tracks_back_8jun12.phtml and create new tracks.phtml file
+
+To move bredscrumb left and reduce bottom margin in styles.css
+
+.breadcrumbs { padding: 0 0 5px; margin:0 0 20px -20px; font-size:14px; font-weight:bold; line-height:1em;}
+
+To reposition right sidebar:
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/2coloums-right.phtml
+
+change class of col-main to col-main-right and add in css:
+
+.col-main-right{ float: left !important; width:680px;}
+
+To Move Category page left for contact and as-seen-on page
+change in css padding-right 20px to 0px
+.col2-left-layout .col-main { float:right; padding-right:0px; }
+.col2-right-layout .col-main { float:left; padding-left:0px;}
+
+to remove white space from home page
+.breadcrumbs { padding: 0 0 5px; margin:0 0 20px -20px; font-size:14px; font-weight:bold; line-height:1em;}
+
+and some change in .col-main
+
+To change Sign In Welcome page
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/3coloums.phtml 
+change class of col-main to col-main-left and add in css:
+.col-main-left{ float: right !important; width:440px;}
+
+
+for success page registration:
+
+/dev3.dollskill.com/html/app/code/local/Crius/Rac/model/register.php
+line->103-104
+//$customer->setEmail($order->getCustomerEmail());
+$customer->setEmail($shipping->setCustomerAddress()->getEmail());
+
+FB like Iframe:
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/html/header.phtml
+
+<fb:like href="http://dev.dollskill.com" send="true"  show_faces="true" style="border:none; overflow:hidden; width:110px;"></fb:like>
+
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/1coloums.phtml
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/2coloums-left.phtml
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/2coloums-right.phtml
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/3coloums.phtml
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/newview.phtml
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/fullpage.phtml
+
+see=http://developers.facebook.com/docs/reference/plugins/like/
+
+In Html Tag
+<html xmlns:fb="http://ogp.me/ns/fb#"
+
+After Body tag.
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+for cart page message:
+
+/dollskill.com/html/app/design/frontend/default/tribeca/template/checkout/cart.phtml
+
+in 
+function DeleteCartItem(itemid)
+add:
+var country_code = jQuery('#country').val();
+jQuery('#co-shipping-method-form').html(parsedJSON.shipping_message+parsedJSON.rates);
+jQuery("input:radio[name=shipping_method]:first").attr('checked', true);
+data : 'action=cartremove_cart&id='+itemid+'&shipping[country_id]='+country_code+'&billing[country_id]='+country_code,
+
+To differentiate product Page and Category Page:
+
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/catalog/category/view.phtml
+     	<div id="Category">Category</div>
+and in styles.css #Category{display:none;}
+
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/catalog/product/view.phtml
+	<div id="Product">Product</div>
+and in styles.css #Product{display:none;}
+
+To Resize Stalkin Image:
+
+/dollskill.com/html/app/code/local/Fishpig/Customtabs/Model/observer.php
+
+
+As-seen-on Url Generation
+/dollskill.com/html/app/code/local/CJM/ColorSelectorPlus/Helper/data.php
+300x350
+
+
+for optimizy tool
+/dev.dollskill.com/html/app/design/frontend/base/default/template/page/html/head.phtml
+
+add:
+<?php 
+$actionName = $this->getAction()->getFullActionName();
+if($actionName=='catalog_category_view')
+{
+	echo "<script>  window.pageType = 'category'; </script>";
+}
+
+if($actionName=='catalog_product_view'){
+	echo "<script>  window.pageType = 'product'; </script>";
+}
+?>
+
+
+Onepage checkout on dev2 assign order to user without login:
+/dev2.dollskill.com/html/app/code/core/Mage/Checkout/Model/Type/onepage.php
+
+code-line:621-686
+
+Express checkout on dev assign order to user without login:
+
+/dev.dollskill.com/html/app/code/local/Mg/Paypal/Model/Express/checkout.php
+code-line:183-250
+
+Add This on Category listing:
+
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/colorselectorplus/catalog/product/list.phtml
+
+add line:230-250
+
+and on:
+/dev.dollskill.com/html/app/design/frontend/default/tribeca/template/page/2-column-left.phtml
+add:
+<script type="text/javascript" src="//assets.pinterest.com/js/pinit.js"></script>
+before </body> tag
+and
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+in head tag
+
+
+about-us navigation issue:
+/dollskill.com/html/app/design/frontend/default/tribeca/template/catalog/navigation/top.phtml
+add:on-line44:onmouseover="Element.addClassName(this, 'over')" onmouseout="Element.removeClassName(this, 'over')"
+
+continue shopping button:
+/dev4.dollskill.com/html/app/design/frontend/default/tribeca/template/checkout/cart.phtml
+
+replace url by:<?php echo $this->getContinueShoppingUrl() ?>
+
+
+To Change Giftcertificate tr td on checkout page
+
+/dev.dollskill.com/html/app/design/frontend/base/default/template/unirgy/giftcert/checkout/total.phtml
