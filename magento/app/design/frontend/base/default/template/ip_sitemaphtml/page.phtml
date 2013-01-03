@@ -1,9 +1,0 @@
-<div class="sitemaphtml-data">
-    <div class="fieldset">
-        <h2 class="legend"><?php echo $this->__('Pages') ?></h2>
-        <?php foreach( $this->getPages() as $_page): 
-            ?>
-            <a href="<?php echo $this->getUrl($_page->getData('identifier')); ?>">  <?php echo $_page->getTitle();?></a> <br/>
-        <?php endforeach; ?>
-    </div>
-</div>

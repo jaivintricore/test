@@ -1,9 +1,0 @@
-<?php if (Mage::getStoreConfig('sitemap/frontend/page')): ?>
-    <?php echo $this->getLayout()->createBlock('sitemaphtml/list')->setTemplate('ip_sitemaphtml/page.phtml')->toHtml(); ?>
-<?php endif;?>
-<?php if (Mage::getStoreConfig('sitemap/frontend/category')): ?>
-    <?php echo $this->getLayout()->createBlock('sitemaphtml/list')->setTemplate('ip_sitemaphtml/category.phtml')->toHtml(); ?>
-<?php endif;?>
-<?php if (Mage::getStoreConfig('sitemap/frontend/product')): ?>
-    <?php echo $this->getLayout()->createBlock('sitemaphtml/list')->setTemplate('ip_sitemaphtml/product.phtml')->toHtml(); ?>
-<?php endif;?>
